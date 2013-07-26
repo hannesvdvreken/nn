@@ -12,20 +12,28 @@ clear; close all; clc;
 config = config();
 
 % command line arguments
-route = argv(){[1,1]};
+arguments = argv();
+
+% check
+if (prod(size(arguments)) < 1)
+	puts "please provide a filename (without .csv).\n\n\t$ octave main.m FILENAME\n";
+	exit;
+end
+
+% retrieve filename
+filename = arguments{[1,1]};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % READ INPUT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% get file
-fn = strcat(config.input_path, route, '.csv');
-X = csvread(fn);
+fn = strcat(config.input_path, filename, '.csv');
+X = load_file(fn);
 
 input_size = size(X,2);
 
-fn = strcat(config.input_path, route, '-out.csv');
-y = csvread(fn);
+fn = strcat(config.input_path, filename, '-out.csv');
+y = load_file(fn);
 
 output_size = size(y,2);
 

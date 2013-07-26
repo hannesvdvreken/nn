@@ -12,8 +12,6 @@ function weights = init_weights(input_size, layers, layer_size, output_size)
 	w2 = zeros(layers - 2, layer_size + 1, layer_size); % 3 dimensional
 	w2 = randomize(w2);
 
-	size(w2)
-
 	% initialize weights between last two layers
 	w3 = zeros(layer_size + 1, output_size);
 	w3 = randomize(w3);
