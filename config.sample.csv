@@ -1,0 +1,3 @@
+input_path,		/path/to/csv_input_files/trailing_slash/
+layers,			2
+layer_size,		50
