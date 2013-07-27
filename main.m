@@ -12,6 +12,10 @@ clear; close all; clc;
 
 % load config
 config = config();
+if (config.layers < 2)
+	printf('The `layers` option must be `2` or higher. Current value: %u\n', config.layers);
+	exit;
+end
 
 % command line arguments
 arguments = argv();
@@ -44,7 +48,7 @@ output_size = size(y,2);
 printf('the number of training examples is %u\n', size(X, 1));
 printf('the input layer has %u neurons\n', input_size);
 printf('the %u internal layers have %u neurons\n', config.layers - 1, config.layer_size);
-printf('the output layer has %u neurons\n--------------------------------------\n', output_size);
+printf('the output layer has %u neurons\n', output_size);
 
 %------------------------------------------------------------------------------------
 % PREPARE GRADIENTS
@@ -74,6 +78,7 @@ end
 % START LEARNING
 %------------------------------------------------------------------------------------
 
+printf('\nThe neural network will now learn. Iterating %u times over the training set.\n--------------------------------------\n', config.max_iterations);
 options = optimset('MaxIter', config.max_iterations);
 
 % supress "possible Matlab-style short-circuit operator" warnings

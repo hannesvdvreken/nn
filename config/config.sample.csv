@@ -1,6 +1,6 @@
 input_path,		/path/to/csv_input_files/trailing_slash/
 layers,			2
 layer_size,		25
-lambda,         1
-max_iterations, 400
-new_weights,    1
+lambda,			1
+max_iterations,	50
+new_weights,	0

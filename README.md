@@ -13,6 +13,7 @@ After that, options are available with
 ```
 config.layers
 config.input_path
+...
 ```
 
 New variables will be added automatically when added to the config file
@@ -21,7 +22,7 @@ New variables will be added automatically when added to the config file
 The value of this field can be both relative and absolute. Use `./` for input files in the same folder as `main.m`.
 
 ### layers
-the `layers` option is the number of layers in the neural network. Please enter a value of 2 or higher! A network with 2 layers has 1 output layer and 1 internal layer (also known as a perceptron). A network with 1 layer can only learn linear divisable models, which can be calculated with a single comparison.
+the `layers` option is the number of layers in the neural network. Please enter a value of 2 or higher! A network with 1 layer can only learn linear divisable models, which can be calculated with a single comparison.
 
 ### layer_size
 The number of neurons in each internal layer. 
@@ -45,6 +46,7 @@ With only 50 iterations an training accuracy of 99% can be reached.
 - dividing training set to do training and cross checking
 - selection of `lambda` by checkin precision & recall on cross checking set
 - Principle Component Analysis
+- export weights to csv
 
 ## License
 MIT
