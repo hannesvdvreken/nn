@@ -1,10 +1,12 @@
-% Learn from csv input
 % author: Hannes Van De Vreken
 % license: MIT
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% add paths for other functions
+addpath("helper");
+
+%------------------------------------------------------------------------------------
 % SETUP
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 % clear console
 clear; close all; clc;
 
@@ -23,32 +25,63 @@ end
 % retrieve filename
 filename = arguments{[1,1]};
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 % READ INPUT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 
 fn = strcat(config.input_path, filename, '.csv');
 X = load_file(fn);
-
 input_size = size(X,2);
 
 fn = strcat(config.input_path, filename, '-out.csv');
 y = load_file(fn);
-
 output_size = size(y,2);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 % DEBUG INFO
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 
+printf('the number of training examples is %u\n', size(X, 1));
 printf('the input layer has %u neurons\n', input_size);
 printf('the %u internal layers have %u neurons\n', config.layers - 1, config.layer_size);
-printf('the output layer has %u neurons\n\n', output_size);
+printf('the output layer has %u neurons\n--------------------------------------\n', output_size);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 % PREPARE GRADIENTS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------------
 
-weights = init_weights(input_size, config.layers, config.layer_size, output_size);
+if (config.new_weights)
 
-size(weights)
+	printf('generating new random weights\n');
+	weights = init_weights(input_size, config.layers, config.layer_size, output_size);
+
+else
+	printf('reading weights from weights.csv file\n');
+	
+	weights = init_weights(input_size, config.layers, config.layer_size, output_size);
+	file_weights = load_file(strcat(config.input_path, 'weights.csv'));
+
+	% check
+	if (size(file_weights, 1) != size(weights, 1))
+		printf('data/weights.csv has to contain %u weights.\n', size(weights, 1));
+		exit;
+	end
+	
+	weights = file_weights;
+end
+
+%------------------------------------------------------------------------------------
+% START LEARNING
+%------------------------------------------------------------------------------------
+
+options = optimset('MaxIter', config.max_iterations);
+
+% supress "possible Matlab-style short-circuit operator" warnings
+warning ("off");
+cost_function = @(p) calculate_cost(X, y, config.lambda, p, config.layers, config.layer_size);
+
+[weights, J] = fmincg(cost_function, weights, options);
+
+p = predict(X, weights, config.layers, input_size, config.layer_size, output_size);
+
+printf('learning accuracy: %2.2f%%\n',mean(mean(double(p == y) * 100)));

@@ -32,3 +32,19 @@ Also when `layers` is equal to 2, the weight matrix between the only internal la
 
 ## input
 The `main.m` script requires one command line argument, which is the name of the input file (without .csv). The input file is retrieved from the folder in the `input_path` variable. The csv with the output variables should have the same name, but should end with `-out.csv`. Both the input and the output file should have integers, separated with comma's (`,`). The output file only has 0 and 1 values. Do not confuse the `output` file with the saved weights file.
+
+### default
+To try this neural network please start with `input_path, ./data/` and run
+```
+$ octave main.m example
+```
+
+With only 50 iterations an training accuracy of 99% can be reached.
+
+## TODO
+- dividing training set to do training and cross checking
+- selection of `lambda` by checkin precision & recall on cross checking set
+- Principle Component Analysis
+
+## License
+MIT
