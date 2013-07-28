@@ -78,7 +78,7 @@ end
 % START LEARNING
 %------------------------------------------------------------------------------------
 
-printf('\nThe neural network will now learn. Iterating %u times over the training set.\n--------------------------------------\n', config.max_iterations);
+printf('\nThe neural network will now learn.\nIterating %u times over the training set.\n--------------------------------------\n', config.max_iterations);
 options = optimset('MaxIter', config.max_iterations);
 
 % suppress "possible Matlab-style short-circuit operator" warnings
@@ -86,6 +86,11 @@ warning ("off");
 cost_function = @(p) calculate_cost(X, y, config.lambda, p, config.layers, config.layer_size);
 
 [weights, J] = fmincg(cost_function, weights, options);
+
+plot(1:size(J,1), J);
+
+printf('The program will pause. Press enter to continue.\n');
+pause;
 
 p = predict(X, weights, config.layers, input_size, config.layer_size, output_size);
 

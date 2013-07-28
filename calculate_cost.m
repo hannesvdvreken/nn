@@ -79,7 +79,7 @@ function [J grad] = calculate_cost(X, y, lambda, weights, layers, layer_size)
 	for idx = internal_layers:-1:1
 
 		w = reshape(w2(idx,:,:), size(w2, 2), size(w2, 3));
-		delta.(layer_name(idx)) = (delta.(layer_name(idx + 1)) * w') .* sigmoid_gradient([ones(m, 1) z.(layer_name(idx))]);
+		delta.(layer_name(idx)) = ((delta.(layer_name(idx + 1)) * w') .* sigmoid_gradient([ones(m, 1) z.(layer_name(idx))]))(:,2:end);
 
 	end
 
