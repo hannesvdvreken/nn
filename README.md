@@ -1,4 +1,4 @@
-# Neural network implementation in Octave
+# Neural network implementation in [octave](http://www.gnu.org/software/octave/)
 
 ## configuration
 
@@ -47,7 +47,6 @@ With only 50 iterations an training accuracy of 99% can be reached.
 - selection of `lambda` by checking precision & recall on cross checking set
 - Principle Component Analysis
 - export weights to csv
-
 - New repository; a generic recommender system.
 
 ## License
