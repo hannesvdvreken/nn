@@ -63,11 +63,11 @@ else
 	printf('reading weights from weights.csv file\n');
 	
 	weights = init_weights(input_size, config.layers, config.layer_size, output_size);
-	file_weights = load_file(strcat(config.input_path, 'weights.csv'));
+	file_weights = load_file(strcat(config.input_path, filename, '-weights.csv'));
 
 	% check
 	if (size(file_weights, 1) != size(weights, 1))
-		printf('data/weights.csv has to contain %u weights.\n', size(weights, 1));
+		printf('the %s-weights.csv has to contain %u weights.\n', filename, size(weights, 1));
 		exit;
 	end
 	
@@ -81,7 +81,7 @@ end
 printf('\nThe neural network will now learn. Iterating %u times over the training set.\n--------------------------------------\n', config.max_iterations);
 options = optimset('MaxIter', config.max_iterations);
 
-% supress "possible Matlab-style short-circuit operator" warnings
+% suppress "possible Matlab-style short-circuit operator" warnings
 warning ("off");
 cost_function = @(p) calculate_cost(X, y, config.lambda, p, config.layers, config.layer_size);
 
