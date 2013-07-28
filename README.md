@@ -44,9 +44,11 @@ With only 50 iterations an training accuracy of 99% can be reached.
 
 ## TODO
 - dividing training set to do training and cross checking
-- selection of `lambda` by checkin precision & recall on cross checking set
+- selection of `lambda` by checking precision & recall on cross checking set
 - Principle Component Analysis
 - export weights to csv
+
+- New repository; a generic recommender system.
 
 ## License
 MIT
