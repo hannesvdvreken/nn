@@ -1,4 +1,4 @@
-# Neural network implementation in Octave
+# Neural network implementation in [octave](http://www.gnu.org/software/octave/)
 
 ## configuration
 
@@ -53,6 +53,7 @@ With only 50 iterations an training accuracy of 99% can be reached.
 
 ## TODO
 - Principle Component Analysis
+- New repository; a generic recommender system.
 
 ## License
 MIT
