@@ -1,11 +1,12 @@
 % author: Hannes Van De Vreken
 % license: MIT
 
-function p = predict(X, weights, layers, input_size, layer_size, output_size)
+function p = predict(X, weights, layers, layer_size, output_size)
 
 	%------------------------------------------------------------------------------------
 	% Prepare
 	%------------------------------------------------------------------------------------
+	input_size = size(X, 2);
 
 	% unwind
 	[w1 w2 w3] = unwind(weights, layers, input_size, layer_size, output_size);
@@ -35,6 +36,6 @@ function p = predict(X, weights, layers, input_size, layer_size, output_size)
 
 	% neuron status of last internal layer times weights to output layer
 	z = a * w3;
-	p = sigmoid(z) > 0.5;
+	p = sigmoid(z);
 
 end

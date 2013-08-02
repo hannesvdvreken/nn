@@ -32,5 +32,15 @@ function cfg = config()
 		end
 	end
 
+	% set defaults
+	cfg.learning_curve =    isfield(cfg, 'learning_curve') && cfg.learning_curve;
+	cfg.new_weights = ( 1 - isfield(cfg, 'new_weights'))   || cfg.new_weights ;
+
+	% check
+	if (cfg.layers < 2)
+		printf('The `layers` option must be `2` or higher. Current value: %u\n', cfg.layers);
+		exit;
+	end
+
 	% return value: cfg
 end

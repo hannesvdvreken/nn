@@ -31,6 +31,15 @@ When `layers` is equal to 2, the only internal layer has the `layer_size` neuron
 
 Also when `layers` is equal to 2, the weight matrix between the only internal layer and the output layer has `layer_size * output_size` values, with `output_size` the number of columns in the output csv file.
 
+### lambda
+When lambda is NOT set, the program will test for lambdas 0.00, 0.01, 0.02, 0.04, till 10.24. Best is to run the program; decide a good lambda that fit's the data and insert it into your `config.csv`.
+
+### learning_curve
+Defaults to 0. If set to 1 the program will pause and show some curves.
+
+### new_weights
+Defaults to 1. But can be 0 if you want to read weights from `-weights.csv` file.
+
 ## input
 The `main.m` script requires one command line argument, which is the name of the input file (without .csv). The input file is retrieved from the folder in the `input_path` variable. The csv with the output variables should have the same name, but should end with `-out.csv`. Both the input and the output file should have integers, separated with comma's (`,`). The output file only has 0 and 1 values. Do not confuse the `output` file with the saved weights file.
 
@@ -43,10 +52,7 @@ $ octave main.m example
 With only 50 iterations an training accuracy of 99% can be reached.
 
 ## TODO
-- dividing training set to do training and cross checking
-- selection of `lambda` by checkin precision & recall on cross checking set
 - Principle Component Analysis
-- export weights to csv
 
 ## License
 MIT

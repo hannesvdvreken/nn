@@ -12,10 +12,6 @@ clear; close all; clc;
 
 % load config
 config = config();
-if (config.layers < 2)
-	printf('The `layers` option must be `2` or higher. Current value: %u\n', config.layers);
-	exit;
-end
 
 % command line arguments
 arguments = argv();
@@ -35,20 +31,20 @@ filename = arguments{[1,1]};
 
 fn = strcat(config.input_path, filename, '.csv');
 X = load_file(fn);
-input_size = size(X,2);
+input_size = size(X, 2);
 
 fn = strcat(config.input_path, filename, '-out.csv');
 y = load_file(fn);
-output_size = size(y,2);
+output_size = size(y, 2);
 
 %------------------------------------------------------------------------------------
 % DEBUG INFO
 %------------------------------------------------------------------------------------
 
-printf('the number of training examples is %u\n', size(X, 1));
-printf('the input layer has %u neurons\n', input_size);
-printf('the %u internal layers have %u neurons\n', config.layers - 1, config.layer_size);
-printf('the output layer has %u neurons\n', output_size);
+printf('number of samples: %u\n', size(X,1));
+printf('number of input layer neurons: %u\n', input_size);
+printf('%u internal layers have %u neurons\n', config.layers - 1, config.layer_size);
+printf('output layer has %u neurons\n\n', output_size);
 
 %------------------------------------------------------------------------------------
 % PREPARE GRADIENTS
@@ -56,11 +52,11 @@ printf('the output layer has %u neurons\n', output_size);
 
 if (config.new_weights)
 
-	printf('generating new random weights\n');
+	printf('generating new random weights...\n');
 	weights = init_weights(input_size, config.layers, config.layer_size, output_size);
 
 else
-	printf('reading weights from weights.csv file\n');
+	printf('reading weights from weights.csv file...\n');
 	
 	weights = init_weights(input_size, config.layers, config.layer_size, output_size);
 	file_weights = load_file(strcat(config.input_path, filename, '-weights.csv'));
@@ -77,21 +73,61 @@ end
 %------------------------------------------------------------------------------------
 % START LEARNING
 %------------------------------------------------------------------------------------
-
-printf('\nThe neural network will now learn.\nIterating %u times over the training set.\n--------------------------------------\n', config.max_iterations);
-options = optimset('MaxIter', config.max_iterations);
-
 % suppress "possible Matlab-style short-circuit operator" warnings
 warning ("off");
-cost_function = @(p) calculate_cost(X, y, config.lambda, p, config.layers, config.layer_size);
 
-[weights, J] = fmincg(cost_function, weights, options);
+if ( ! isfield(config, 'lambda'))
+	
+	[X_train y_train, X_test, y_test, X_cv, y_cv] = divide(X, y, 1);
 
-plot(1:size(J,1), J);
+	[w config.lambda] = choose_lambda(config, X_train, y_train, X_cv, y_cv, weights);
+	
+else
+	
+	% divide input set
+	training_size = floor(size(X,1) * 0.7);
+	[X_train y_train, X_test, y_test] = divide(X, y);
 
-printf('The program will pause. Press enter to continue.\n');
-pause;
+	% prepare
+	options = optimset('MaxIter', config.max_iterations);
+	cost_function = @(p) calculate_cost(X_train, y_train, config.lambda, p, config.layers, config.layer_size);
 
-p = predict(X, weights, config.layers, input_size, config.layer_size, output_size);
+	% learn and plot learning curve
+	printf('Learning...');
+	[w J] = fmincg(cost_function, weights, options);
+	printf('\n');
 
-printf('learning accuracy: %2.2f%%\n',mean(mean(double(p == y) * 100)));
+	if (config.learning_curve)
+		plot(1:size(J,1), J);
+		pause;
+	end
+
+end
+
+%------------------------------------------------------------------------------------
+% EVALUATE LEARNING
+%------------------------------------------------------------------------------------
+
+% predict output for X_test
+activation_levels = predict(X_test, w, config.layers, config.layer_size, output_size);
+
+% threshold 0.5
+config.threshold = 0.5;
+p = (activation_levels > config.threshold);
+
+% calculate precision & recall
+prec = precision(p, y_test);
+rec  = recall(p, y_test);
+f = (2 * prec * rec) / (prec + rec);
+
+printf('\nPrecision: %2.2f%%, recall: %2.2f%%.\n', prec * 100, rec * 100);
+printf('f-score: %2.2f at threshold: %2.2f\n', f, config.threshold);
+
+%------------------------------------------------------------------------------------
+% EXPORT
+%------------------------------------------------------------------------------------
+
+if (config.new_weights)
+	fn = strcat(config.input_path, filename, '-new-weights.csv');
+	dlmwrite(fn, w, '\n');
+end
